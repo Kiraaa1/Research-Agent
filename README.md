@@ -2,8 +2,8 @@
 
 A small, production-quality research assistant built on
 [LangGraph](https://github.com/langchain-ai/langgraph). A **Supervisor** agent
-delegates each turn to one of three **Worker** agents — a **Web Searcher**, a
-**Summariser**, and a **Synthesiser** — until a final answer is ready. The
+delegates each turn to one of three **Worker** agents (a **Web Searcher**, a
+**Summariser**, and a **Synthesiser**) until a final answer is ready. The
 final answer is streamed token-by-token to the terminal.
 
 ---
@@ -52,7 +52,7 @@ terminates.
                 │ │collect_│    │              │             │
                 │ │results │    │              │             │
                 │ └───┬────┘    │              │             │
-                └─────┴─────────┴──────────────┴─────────────┘
+                └─────┴─────────┴──────────────┘
                                │
                                ▼ (supervisor returns "FINISH")
                         ┌─────────────┐
@@ -72,15 +72,15 @@ first round of results is insufficient.
 `agents/state.py` defines `ResearchState`, a `TypedDict` with reducer-annotated
 fields so worker nodes can append (rather than overwrite) results across loops:
 
-- `query: str` — the user's research question.
-- `messages: list[BaseMessage]` *(add_messages reducer)* — scratchpad used by
+- `query: str`: the user's research question.
+- `messages: list[BaseMessage]` *(add_messages reducer)*: scratchpad used by
   the searcher / `ToolNode`.
-- `search_results: list[SearchResult]` *(add reducer)* — normalised web hits.
-- `summaries: list[str]` *(add reducer)* — one entry per summarisation batch.
-- `final_answer: str` — populated by the Synthesiser.
-- `next_agent: SupervisorDestination` — the supervisor's routing decision.
-- `supervisor_notes: list[str]` *(add reducer)* — per-step routing rationale.
-- `iteration: int` — guards against runaway supervisor loops.
+- `search_results: list[SearchResult]` *(add reducer)*: normalised web hits.
+- `summaries: list[str]` *(add reducer)*: one entry per summarisation batch.
+- `final_answer: str`: populated by the Synthesiser.
+- `next_agent: SupervisorDestination`: the supervisor's routing decision.
+- `supervisor_notes: list[str]` *(add reducer)*: per-step routing rationale.
+- `iteration: int`: guards against runaway supervisor loops.
 
 ---
 
@@ -107,7 +107,7 @@ chain. LangGraph is a better fit for this problem because:
    to emit tool calls and the graph takes care of execution.
 5. **Streaming and observability.** LangGraph exposes both `updates` and
    `messages` stream modes, so the CLI can print per-node progress *and*
-   stream the Synthesiser's tokens in the same loop — something that would
+   stream the Synthesiser's tokens in the same loop, something that would
    require manual callback wiring with vanilla chains.
 
 For a single-shot RAG pipeline a linear chain is perfectly fine; for a
